@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# env files
+.env
+client/.env
+server/.env
+
+# build output
+dist
+build
+client/dist
+server/dist
+
+# vite / cache
+.vite
+client/.vite
+
+# logs
+npm-debug.log*
+
