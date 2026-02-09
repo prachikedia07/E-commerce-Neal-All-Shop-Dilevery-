@@ -183,3 +183,15 @@
 html {
   font-size: var(--font-size);
 }
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  color: #4b5563;
+}
+.nav.active {
+  background: #FF9F3F;
+  color: white;
+}
