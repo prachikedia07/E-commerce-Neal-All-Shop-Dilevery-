@@ -1,8 +1,11 @@
 import { Bell, Calendar } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from "../../../context/AuthContext";
 
 export const TopBar = () => {
   const [open, setOpen] = useState(true);
+  const { user } = useAuth();
+
 
   const today = new Date().toLocaleDateString('en-IN', {
     weekday: 'long',
@@ -38,10 +41,14 @@ export const TopBar = () => {
         <Bell className="text-gray-500" />
 
         {/* Store Identity */}
-        <div className="text-right">
-          <p className="text-sm font-bold text-gray-800">Spice Paradise</p>
-          <p className="text-xs text-gray-500">Rajesh Kumar</p>
-        </div>
+       <div className="text-right">
+  <p className="text-sm font-bold text-gray-800">
+    {user?.storeName || "My Store"}
+  </p>
+  <p className="text-xs text-gray-500">
+    {user?.name}
+  </p>
+</div>
       </div>
     </header>
   );

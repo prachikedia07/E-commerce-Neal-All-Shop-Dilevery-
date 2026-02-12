@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
 
+
 export function VendorLayout({ user }: any) {
   return (
     <div className="flex h-screen bg-[#FFF7ED]">

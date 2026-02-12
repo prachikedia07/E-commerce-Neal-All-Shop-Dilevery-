@@ -166,12 +166,19 @@
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import AppRouter from "./app/AppRouter";
+import { Toaster } from "sonner";
+
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <AppRouter />
+       <Toaster
+  richColors
+  position="top-right"
+  closeButton
+/>
       </BrowserRouter>
     </AuthProvider>
   );

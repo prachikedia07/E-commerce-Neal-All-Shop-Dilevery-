@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginCustomer, loginVendor } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
-
+import { toast } from "sonner";
 
 
 // interface UserType {
@@ -27,30 +27,41 @@ export const LoginPage: React.FC = () => {
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  let res;
+  try {
+    let res;
 
-  if (selectedRole === "vendor") {
-    res = await loginVendor({
-      emailOrPhone: email,
-      password,
-    });
-  } else {
-    res = await loginCustomer({
-      emailOrPhone: email,
-      password,
-    });
+    if (selectedRole === "vendor") {
+      res = await loginVendor({
+        emailOrPhone: email,
+        password,
+      });
+    } else {
+      res = await loginCustomer({
+        emailOrPhone: email,
+        password,
+      });
+    }
+
+    if (!res?.token) {
+      toast.error(res?.message || "Invalid credentials. Please try again.");
+      return;
+    }
+
+    toast.success("Login successful");
+
+    login(res.user, res.token);
+
+    if (res.user.role === "vendor") navigate("/vendor", { replace: true });
+    else navigate("/", { replace: true });
+
+  } catch (err: any) {
+    toast.error(
+      err?.response?.data?.message || 
+      "Invalid credentials. Please try again."
+    );
   }
-
-  if (!res.token) {
-    alert(res.message || "User does not exist. Please signup.");
-    return;
-  }
-
-  login(res.user, res.token);
-
-  if (res.user.role === "vendor") navigate("/vendor");
-  else navigate("/");
 };
+
 
 
   /* ⬇⬇⬇ EVERYTHING BELOW THIS IS YOUR ORIGINAL UI ⬇⬇⬇ */

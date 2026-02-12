@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext";
 import {
   MapPin,
   ShoppingBag,
@@ -68,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onUpdateQuantity,
 }) => {
   const navigate = useNavigate();
-
+  const { logout } = useAuth();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
   const [isLocationDropdownOpen, setIsLocationDropdownOpen] = useState(false);
@@ -105,11 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     navigate(path);
   }, [navigate]);
 
-  const handleLogoutClick = useCallback(() => {
-    setIsProfileDropdownOpen(false);
-    onLogout?.();
-    navigate(ROUTES.home);
-  }, [navigate, onLogout]);
+
 
   /* ---------------- COUPONS ---------------- */
 
@@ -140,9 +137,32 @@ export const Navbar: React.FC<NavbarProps> = ({
   const gstAmount = subtotal > 0 ? Math.round((subtotal - discount) * 0.05) : 0;
   const total = subtotal - discount + deliveryFee + gstAmount;
 
-  function handleMenuItemClick(arg0: string): void {
-    throw new Error('Function not implemented.');
+ const handleMenuItemClick = (item: string) => {
+  setIsProfileDropdownOpen(false);
+
+  switch (item) {
+    case "logout":
+      logout();
+      navigate("/login", { replace: true });
+      break;
+
+    case "profile":
+      navigate("/profile");
+      break;
+
+    case "orders":
+      navigate("/orders");
+      break;
+
+    case "home":
+      navigate("/");
+      break;
+
+    default:
+      break;
   }
+};
+
 
   /* ---------------- JSX (UNCHANGED UI) ---------------- */
 

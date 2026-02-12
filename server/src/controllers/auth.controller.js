@@ -57,8 +57,10 @@ exports.customerLogin = async (req, res) => {
     const { emailOrPhone, password } = req.body;
 
     const user = await User.findOne({
-      $or: [{ email: emailOrPhone }, { phone: emailOrPhone }],
-    }).select("+password");
+  $or: [{ email: emailOrPhone }, { phone: emailOrPhone }],
+  role: "customer",
+}).select("+password");
+
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });

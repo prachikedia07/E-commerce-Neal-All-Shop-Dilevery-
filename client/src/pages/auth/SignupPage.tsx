@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signupCustomer, signupVendor } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
-
+import { toast } from "sonner";
 
 // interface UserType {
 //   name: string;
@@ -29,35 +29,42 @@ export const SignupPage: React.FC = () => {
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  let res;
+  try {
+    let res;
 
-  if (selectedRole === "vendor") {
-    res = await signupVendor({
-      name,
-      email,
-      phone,
-      password,
-      storeName: name + " Store",
-    });
-  } else {
-    res = await signupCustomer({
-      name,
-      email,
-      phone,
-      password,
-    });
+    if (selectedRole === "vendor") {
+      res = await signupVendor({
+        name,
+        email,
+        phone,
+        password,
+        storeName: name + " Store",
+      });
+    } else {
+      res = await signupCustomer({
+        name,
+        email,
+        phone,
+        password,
+      });
+    }
+
+    if (!res.user) {
+      toast.error(res.message || "Signup failed");
+      return;
+    }
+
+    toast.success("Account created successfully");
+
+    login(res.user, res.token);
+
+    if (res.user.role === "vendor") navigate("/vendor");
+    else navigate("/");
+  } catch (err) {
+    toast.error("Something went wrong. Please try again.");
   }
-
-  if (!res.user) {
-    alert(res.message || "Signup failed");
-    return;
-  }
-
-  login(res.user, res.token);
-
-  if (res.user.role === "vendor") navigate("/vendor");
-  else navigate("/");
 };
+
 
 
 

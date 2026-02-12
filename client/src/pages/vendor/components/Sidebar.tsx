@@ -1,4 +1,6 @@
 import { NavLink } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import { BrandLogo } from '../../../components/BrandLogo';
 import {
   LayoutDashboard,
@@ -11,6 +13,14 @@ import {
 } from 'lucide-react';
 
 export const Sidebar = () => {
+  const navigate = useNavigate();
+const { logout } = useAuth();
+
+const handleLogout = () => {
+  logout();
+  navigate("/login");
+};
+
   const items = [
     { label: 'Dashboard', to: '/vendor', icon: LayoutDashboard },
     { label: 'Orders', to: '/vendor/orders', icon: ShoppingBag },
@@ -52,10 +62,14 @@ export const Sidebar = () => {
 
       {/* Logout */}
       <div className="p-4 border-t border-orange-100">
-        <button className="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl w-full">
-          <LogOut size={20} />
-          Logout
-        </button>
+      <button
+  onClick={handleLogout}
+  className="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl w-full"
+>
+  <LogOut size={20} />
+  Logout
+</button>
+
       </div>
     </aside>
   );

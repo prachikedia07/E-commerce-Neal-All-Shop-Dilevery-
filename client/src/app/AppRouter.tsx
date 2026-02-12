@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { HomePage } from "../pages/customer/HomePage";
 import { NearbyShopsPage } from "../pages/customer/NearbyShopsPage";
@@ -16,7 +17,7 @@ import { VendorProfile } from "../pages/vendor/VendorProfile";
 import { useAuth } from "../context/AuthContext";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 
-/* ---------- Wrapper for shop detail ---------- */
+/* ---------- Wrapper ---------- */
 function ShopDetailRoute(props: any) {
   const { shopId } = useParams();
   return <ShopDetailPage {...props} shopId={shopId || ""} />;
@@ -30,6 +31,12 @@ export default function AppRouter() {
   const [cartItems, setCartItems] = useState<any[]>([]);
 
   const handleAddToCart = (item: any) => {
+    if (!user) {
+      toast.error("Please login to add items to cart");
+      navigate("/login");
+      return;
+    }
+
     const index = cartItems.findIndex((i) => i.id === item.id);
     if (index !== -1) {
       const updated = [...cartItems];
@@ -107,8 +114,26 @@ export default function AppRouter() {
         }
       />
 
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+      <Route
+  path="/login"
+  element={user ? <Navigate to={user.role === "vendor" ? "/vendor" : "/"} replace /> : <LoginPage />}
+/>
+
+<Route
+  path="/signup"
+  element={user ? <Navigate to={user.role === "vendor" ? "/vendor" : "/"} replace /> : <SignupPage />}
+/>
+
+      {/* <Route
+  path="/login"
+  element={user ? <Navigate to="/" replace /> : <LoginPage />}
+/>
+
+<Route
+  path="/signup"
+  element={user ? <Navigate to="/" replace /> : <SignupPage />}
+/> */}
+
 
       {/* CUSTOMER PROTECTED */}
 
