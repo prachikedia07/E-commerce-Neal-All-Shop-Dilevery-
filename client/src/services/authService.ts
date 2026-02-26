@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_URL;
 
 async function apiFetch(endpoint: string, options: RequestInit = {}) {
   const token = localStorage.getItem("token");
@@ -12,10 +12,21 @@ async function apiFetch(endpoint: string, options: RequestInit = {}) {
     },
   });
 
-  const data = await res.json();
+  let data;
+
+  try {
+    data = await res.json();
+  } catch (err) {
+    // If backend returned no JSON
+    data = null;
+  }
 
   if (!res.ok) {
-    throw new Error(data.message || "Something went wrong");
+    // IMPORTANT: show backend message if exists
+    throw new Error(
+      data?.message ||
+      `Request failed with status ${res.status}`
+    );
   }
 
   return data;

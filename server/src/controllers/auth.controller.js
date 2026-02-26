@@ -6,17 +6,20 @@ const generateToken = (userId) => {
   return jwt.sign(
     { id: userId },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRE }
+    { expiresIn: process.env.JWT_EXPIRE || "7d" }
   );
 };
 
-/* ---------------- SIGNUP (CUSTOMER) ---------------- */
+/* ---------------- CUSTOMER SIGNUP ---------------- */
 exports.customerSignup = async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
 
     if (!name || !email || !phone || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
 
     const existingUser = await User.findOne({
@@ -24,7 +27,10 @@ exports.customerSignup = async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(409).json({ message: "User already exists" });
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
     }
 
     const user = await User.create({
@@ -35,8 +41,12 @@ exports.customerSignup = async (req, res) => {
       role: "customer",
     });
 
-    res.status(201).json({
+    const token = generateToken(user._id);
+
+    return res.status(201).json({
+      success: true,
       message: "Customer signup successful",
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -45,36 +55,48 @@ exports.customerSignup = async (req, res) => {
         role: user.role,
       },
     });
+
   } catch (error) {
     console.error("SIGNUP ERROR:", error);
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
-/* ---------------- LOGIN ---------------- */
+/* ---------------- CUSTOMER LOGIN ---------------- */
 exports.customerLogin = async (req, res) => {
   try {
     const { emailOrPhone, password } = req.body;
 
     const user = await User.findOne({
-  $or: [{ email: emailOrPhone }, { phone: emailOrPhone }],
-  role: "customer",
-}).select("+password");
-
+      $or: [{ email: emailOrPhone }, { phone: emailOrPhone }],
+      role: "customer",
+    }).select("+password");
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({
+        success: false,
+        message: "No account found. Please sign up first.",
+      });
     }
 
     const isMatch = await user.matchPassword(password);
+
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
 
     const token = generateToken(user._id);
 
-    res.status(200).json({
+    return res.status(200).json({
+      success: true,
       message: "Login successful",
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -82,21 +104,27 @@ exports.customerLogin = async (req, res) => {
         phone: user.phone,
         role: user.role,
       },
-      token,
     });
+
   } catch (error) {
     console.error("LOGIN ERROR:", error);
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
-/* -------- VENDOR SIGNUP -------- */
+/* ---------------- VENDOR SIGNUP ---------------- */
 exports.vendorSignup = async (req, res) => {
   try {
     const { name, email, phone, password, storeName } = req.body;
 
     if (!name || !email || !phone || !password || !storeName) {
-      return res.status(400).json({ message: "All fields required" });
+      return res.status(400).json({
+        success: false,
+        message: "All fields required",
+      });
     }
 
     const exists = await User.findOne({
@@ -104,7 +132,10 @@ exports.vendorSignup = async (req, res) => {
     });
 
     if (exists) {
-      return res.status(409).json({ message: "Email already exists" });
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
     }
 
     const vendor = await User.create({
@@ -118,7 +149,8 @@ exports.vendorSignup = async (req, res) => {
 
     const token = generateToken(vendor._id);
 
-    res.status(201).json({
+    return res.status(201).json({
+      success: true,
       message: "Vendor signup successful",
       token,
       user: {
@@ -128,12 +160,17 @@ exports.vendorSignup = async (req, res) => {
         storeName: vendor.storeName,
       },
     });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("VENDOR SIGNUP ERROR:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
-/* -------- VENDOR LOGIN -------- */
+/* ---------------- VENDOR LOGIN ---------------- */
 exports.vendorLogin = async (req, res) => {
   try {
     const { emailOrPhone, password } = req.body;
@@ -144,26 +181,40 @@ exports.vendorLogin = async (req, res) => {
     }).select("+password");
 
     if (!vendor) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({
+        success: false,
+        message: "No account found. Please sign up first.",
+      });
     }
 
     const match = await vendor.matchPassword(password);
+
     if (!match) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
 
     const token = generateToken(vendor._id);
 
-    res.status(200).json({
+    return res.status(200).json({
+      success: true,
       message: "Vendor login successful",
       token,
       user: {
         id: vendor._id,
         name: vendor.name,
         role: vendor.role,
+        storeName: vendor.storeName,
       },
     });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("VENDOR LOGIN ERROR:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };

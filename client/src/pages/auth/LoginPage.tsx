@@ -43,7 +43,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
 
     if (!res?.token) {
-      toast.error(res?.message || "Invalid credentials. Please try again.");
+      toast.error(res?.message || "Invalid credentials.");
       return;
     }
 
@@ -56,8 +56,8 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   } catch (err: any) {
     toast.error(
-      err?.response?.data?.message || 
-      "Invalid credentials. Please try again."
+      err?.message || 
+      "Invalid credentials."
     );
   }
 };

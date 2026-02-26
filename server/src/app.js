@@ -10,12 +10,7 @@ const vendorRoutes = require("./routes/vendor.routes");
 
 const app = express();
 app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.post("/test", (req, res) => {
   res.json({ ok: true });
