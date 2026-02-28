@@ -13,6 +13,7 @@ import { ProfilePage } from "../pages/customer/ProfilePage";
 import { VendorLayout } from "../pages/vendor/VendorLayout";
 import { VendorDashboard } from "../pages/vendor/VendorDashboard";
 import { VendorProfile } from "../pages/vendor/VendorProfile";
+import { ProductsPage } from "../pages/vendor/ProductsPage";
 
 import { useAuth } from "../context/AuthContext";
 import { ProtectedRoute } from "../components/ProtectedRoute";
@@ -178,16 +179,17 @@ export default function AppRouter() {
       {/* VENDOR PROTECTED */}
 
       <Route
-        path="/vendor"
-        element={
-          <ProtectedRoute role="vendor">
-            <VendorLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<VendorDashboard />} />
-        <Route path="profile" element={<VendorProfile />} />
-      </Route>
+  path="/vendor"
+  element={
+    <ProtectedRoute role="vendor">
+      <VendorLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route index element={<VendorDashboard />} />
+  <Route path="products" element={<ProductsPage />} />
+  <Route path="profile" element={<VendorProfile />} />
+</Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

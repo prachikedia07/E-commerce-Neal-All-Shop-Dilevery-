@@ -19,6 +19,10 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    discountedPrice: {
+      type: Number,
+    },
+
     category: {
       type: String,
       required: true,
@@ -27,6 +31,7 @@ const productSchema = new mongoose.Schema(
     stock: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     image: {
@@ -40,5 +45,12 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+/* AUTO: If stock is 0 → mark unavailable */
+productSchema.pre("save", function () {
+  if (this.stock === 0) {
+    this.isAvailable = false;
+  }
+});
 
 module.exports = mongoose.model("Product", productSchema);
