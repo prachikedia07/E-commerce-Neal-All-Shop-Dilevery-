@@ -36,9 +36,11 @@ export function getVendorProducts() {
 export function createProduct(data: {
   name: string;
   price: number;
+  discountedPrice?: number;
   category: string;
   stock: number;
   image?: string;
+  isVeg?: boolean;
 }) {
   return apiFetch("/vendor/products", {
     method: "POST",

@@ -5,7 +5,7 @@ const Product = require("../models/product");
 ================================ */
 exports.createProduct = async (req, res) => {
   try {
-    const { name, price, discountedPrice, category, stock, image } =
+    const { name, price, discountedPrice, category, stock, image, isVeg, isAvailable } =
       req.body;
 
     if (!name || !price || !category) {
@@ -22,6 +22,7 @@ exports.createProduct = async (req, res) => {
       category,
       stock: stock ?? 0,
       image,
+      isVeg: isVeg ?? true, 
       isAvailable: stock > 0,
     });
 
@@ -67,7 +68,7 @@ exports.updateProduct = async (req, res) => {
     return res.status(404).json({ message: "Product not found" });
   }
 
-  const { name, price, discountedPrice, category, stock, isAvailable } =
+  const { name, price, discountedPrice, category, stock, isAvailable, isVeg } =
     req.body;
 
   if (name !== undefined) product.name = name;
@@ -77,10 +78,11 @@ exports.updateProduct = async (req, res) => {
   if (category !== undefined) product.category = category;
   if (stock !== undefined) product.stock = stock;
   if (isAvailable !== undefined) product.isAvailable = isAvailable;
+  if (isVeg !== undefined) product.isVeg = isVeg;
 
-  if (product.stock === 0) {
-    product.isAvailable = false;
-  }
+  // if (product.stock === 0) {
+  //   product.isAvailable = false;
+  // }
 
   await product.save();
 

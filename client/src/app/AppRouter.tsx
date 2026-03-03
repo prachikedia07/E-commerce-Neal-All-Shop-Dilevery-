@@ -7,13 +7,15 @@ import { NearbyShopsPage } from "../pages/customer/NearbyShopsPage";
 import { ShopDetailPage } from "../pages/customer/ShopDetailPage";
 import { LoginPage } from "../pages/auth/LoginPage";
 import { SignupPage } from "../pages/auth/SignupPage";
-import { OrdersPage } from "../pages/customer/OrdersPage";
+import { OrdersPage as CustomerOrdersPage } from "../pages/customer/OrdersPage";
 import { ProfilePage } from "../pages/customer/ProfilePage";
 
 import { VendorLayout } from "../pages/vendor/VendorLayout";
 import { VendorDashboard } from "../pages/vendor/VendorDashboard";
 import { VendorProfile } from "../pages/vendor/VendorProfile";
 import { ProductsPage } from "../pages/vendor/ProductsPage";
+import { InventoryPage } from "../pages/vendor/InventoryPage";
+import { OrdersPage as VendorOrdersPage } from "../pages/vendor/OrdersPage";
 
 import { useAuth } from "../context/AuthContext";
 import { ProtectedRoute } from "../components/ProtectedRoute";
@@ -146,7 +148,7 @@ export default function AppRouter() {
         path="/orders"
         element={
           <ProtectedRoute role="customer">
-            <OrdersPage
+            <CustomerOrdersPage 
               user={user!}
               cartCount={cartItems.length}
               cartItems={cartItems}
@@ -187,7 +189,9 @@ export default function AppRouter() {
   }
 >
   <Route index element={<VendorDashboard />} />
+  <Route path="orders" element={<VendorOrdersPage />} />
   <Route path="products" element={<ProductsPage />} />
+  <Route path="inventory" element={<InventoryPage />} />
   <Route path="profile" element={<VendorProfile />} />
 </Route>
 

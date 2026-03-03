@@ -318,10 +318,17 @@ const ProductCard = ({
             </span>
           </div>
           <div
-            className={`flex items-center justify-center w-4 h-4 border-2 rounded-sm shrink-0 ${product.isVeg !== false ? "border-green-600" : "border-red-600"}`}
-            title={product.isVeg !== false ? "Vegetarian" : "Non-Vegetarian"}>
-            <div className={`w-2 h-2 rounded-full ${product.isVeg !== false ? "bg-green-600" : "bg-red-600"}`} />
-          </div>
+  className={`flex items-center justify-center w-4 h-4 border-2 rounded-sm shrink-0 ${
+    product.isVeg ? "border-green-600" : "border-red-600"
+  }`}
+  title={product.isVeg ? "Vegetarian" : "Non-Vegetarian"}
+>
+  <div
+    className={`w-2 h-2 rounded-full ${
+      product.isVeg ? "bg-green-600" : "bg-red-600"
+    }`}
+  />
+</div>
         </div>
 
         {/* Name */}
@@ -473,6 +480,7 @@ export const ProductsPage = () => {
     name: "", price: "", discountedPrice: "", category: "", stock: "", image: "",
   });
 
+  
   /* ── Load ── */
   const loadProducts = async () => {
     try {

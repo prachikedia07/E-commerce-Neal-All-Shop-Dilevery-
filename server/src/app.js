@@ -6,7 +6,8 @@ const testRoutes = require("./routes/test.routes");
 const customerRoutes = require("./routes/customer.routes");
 const vendorRoutes = require("./routes/vendor.routes");
 const productRoutes = require("./routes/product.routes");
-
+const inventoryRoutes = require("./routes/inventory.routes");
+const orderRoutes = require("./routes/order.routes");
 
 const app = express();
 app.use(express.json());
@@ -22,5 +23,7 @@ app.use("/api/test", testRoutes);
 app.use("/api/customer", customerRoutes);
 app.use("/api/vendor", vendorRoutes);
 app.use("/api/vendor/products", productRoutes);
+app.use("/api/vendor/inventory", inventoryRoutes);
+app.use("/api/vendor/orders", orderRoutes);
 
 module.exports = app;
